@@ -1,0 +1,133 @@
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-3xl font-bold mb-6">Admin Dashboard</h2>
+
+  <div class="mb-8">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-2xl font-bold">Apartments</h3>
+      <button 
+        (click)="openApartmentForm()"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Add Apartment
+      </button>
+    </div>
+
+    <div *ngIf="showApartmentForm" class="bg-white p-6 rounded-lg shadow-lg mb-6">
+      <h4 class="text-xl font-bold mb-4">{{ editingApartment ? 'Edit' : 'Add' }} Apartment</h4>
+      <form (ngSubmit)="saveApartment()">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-gray-700 mb-2">Title</label>
+            <input 
+              type="text" 
+              [(ngModel)]="apartmentForm.title" 
+              name="title"
+              class="w-full px-4 py-2 border rounded"
+              required>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Location</label>
+            <input 
+              type="text" 
+              [(ngModel)]="apartmentForm.location" 
+              name="location"
+              class="w-full px-4 py-2 border rounded"
+              required>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Price</label>
+            <input 
+              type="number" 
+              [(ngModel)]="apartmentForm.price" 
+              name="price"
+              class="w-full px-4 py-2 border rounded"
+              required>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Amenities</label>
+            <input 
+              type="text" 
+              [(ngModel)]="apartmentForm.amenities" 
+              name="amenities"
+              class="w-full px-4 py-2 border rounded"
+              required>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Save
+          </button>
+          <button type="button" (click)="showApartmentForm = false" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-6 py-3 text-left">Title</th>
+            <th class="px-6 py-3 text-left">Location</th>
+            <th class="px-6 py-3 text-left">Price</th>
+            <th class="px-6 py-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let apt of apartments" class="border-t">
+            <td class="px-6 py-4">{{ apt.title }}</td>
+            <td class="px-6 py-4">{{ apt.location }}</td>
+            <td class="px-6 py-4">${{ apt.price }}</td>
+            <td class="px-6 py-4">
+              <button (click)="editApartment(apt)" class="text-blue-600 hover:underline mr-4">Edit</button>
+              <button (click)="deleteApartment(apt.id)" class="text-red-600 hover:underline">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-2xl font-bold mb-4">All Bookings</h3>
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-6 py-3 text-left">User</th>
+            <th class="px-6 py-3 text-left">Apartment</th>
+            <th class="px-6 py-3 text-left">Status</th>
+            <th class="px-6 py-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of bookings" class="border-t">
+            <td class="px-6 py-4">{{ booking.user.name }}</td>
+            <td class="px-6 py-4">{{ booking.apartment.title }}</td>
+            <td class="px-6 py-4">
+              <span 
+                [class]="booking.status === 'approved' ? 'bg-green-100 text-green-800' : booking.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'"
+                class="px-3 py-1 rounded-full text-sm">
+                {{ booking.status }}
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <button 
+                (click)="updateBookingStatus(booking.id, 'approved')"
+                class="text-green-600 hover:underline mr-4"
+                *ngIf="booking.status === 'pending'">
+                Approve
+              </button>
+              <button 
+                (click)="updateBookingStatus(booking.id, 'rejected')"
+                class="text-red-600 hover:underline"
+                *ngIf="booking.status === 'pending'">
+                Reject
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
