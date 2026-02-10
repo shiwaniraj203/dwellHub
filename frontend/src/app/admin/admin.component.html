@@ -77,7 +77,7 @@
           <tr *ngFor="let apt of apartments" class="border-t">
             <td class="px-6 py-4">{{ apt.title }}</td>
             <td class="px-6 py-4">{{ apt.location }}</td>
-            <td class="px-6 py-4">${{ apt.price }}</td>
+            <td class="px-6 py-4">&#8377;{{ apt.price }}</td>
             <td class="px-6 py-4">
               <button (click)="editApartment(apt)" class="text-blue-600 hover:underline mr-4">Edit</button>
               <button (click)="deleteApartment(apt.id)" class="text-red-600 hover:underline">Delete</button>
