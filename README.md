@@ -227,42 +227,6 @@ Password: user123
 ```
 **Access:** Browse apartments and manage personal bookings
 
----
-
-## 🔌 API Endpoints
-
-### Authentication Endpoints
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/register` | Create new user account | ❌ |
-| POST | `/api/login` | Authenticate user and return JWT | ❌ |
-
-### Apartment Endpoints
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/apartments` | Retrieve all apartments | ❌ |
-| POST | `/api/apartments` | Create new apartment | ✅ Admin |
-| PUT | `/api/apartments/:id` | Update apartment | ✅ Admin |
-| DELETE | `/api/apartments/:id` | Delete apartment | ✅ Admin |
-
-### Booking Endpoints
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/api/bookings` | Create booking request | ✅ User |
-| GET | `/api/bookings/my` | Get current user's bookings | ✅ User |
-| GET | `/api/bookings/all` | Get all bookings | ✅ Admin |
-| PUT | `/api/bookings/:id/status` | Update booking status | ✅ Admin |
-
-### Health Check
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | Verify API status |
-
----
 
 ## 🔒 Security Features
 
@@ -412,10 +376,10 @@ This project is created for educational and portfolio purposes.
 
 ## 📧 Contact
 
-**Your Name**  
+**Shiwani Raj**  
 📧 Email: shiwaniraj203@example.com  
-🔗 LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)  
-🐙 GitHub: [@yourusername](https://github.com/yourusername)
+🔗 LinkedIn: https://www.linkedin.com/in/shiwani-raj-1430761b8
+🐙 GitHub: https://github.com/shiwaniraj203
 
 **Project Link:** [https://github.com/yourusername/dwellhub](https://github.com/yourusername/dwellhub)
 
