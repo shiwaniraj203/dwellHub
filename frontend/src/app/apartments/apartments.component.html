@@ -1,21 +1,80 @@
 <div class="container mx-auto px-4 py-8">
-  <h2 class="text-3xl font-bold mb-6">Available Apartments</h2>
+  <h2 class="text-3xl font-bold mb-6">Available Apartments in Bangalore</h2>
   
   <div *ngIf="message" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
     {{ message }}
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div *ngFor="let apt of apartments" class="bg-white rounded-lg shadow-lg p-6">
-      <h3 class="text-xl font-bold mb-2">{{ apt.title }}</h3>
-      <p class="text-gray-600 mb-2">{{ apt.location }}</p>
-      <p class="text-2xl font-bold text-blue-600 mb-2">${{ apt.price }}/month</p>
-      <p class="text-gray-600 mb-4">{{ apt.amenities }}</p>
-      <button 
-        (click)="bookApartment(apt.id)"
-        class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
-        Book Now
-      </button>
+  <!-- FILTER SECTION -->
+  <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+    <h3 class="text-xl font-bold mb-4">🔍 Filter Apartments</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Location Filter -->
+      <div>
+        <label class="block text-gray-700 mb-2">📍 Locality</label>
+        <input 
+          type="text" 
+          [(ngModel)]="searchLocation"
+          (ngModelChange)="applyFilters()"
+          placeholder="e.g., Whitefield, Koramangala, HSR"
+          class="w-full px-4 py-2 border rounded">
+      </div>
+
+      <!-- Price Filter -->
+      <div>
+        <label class="block text-gray-700 mb-2">💰 Max Price: ₹{{ maxPrice | number }}</label>
+        <input 
+          type="range" 
+          [(ngModel)]="maxPrice"
+          (ngModelChange)="applyFilters()"
+          min="10000" 
+          max="70000" 
+          step="5000"
+          class="w-full">
+      </div>
+
+      <!-- Clear Button -->
+      <div class="flex items-end">
+        <button 
+          (click)="clearFilters()"
+          class="w-full bg-gray-500 text-white py-2 rounded hover:bg-gray-600">
+          Clear Filters
+        </button>
+      </div>
     </div>
+    
+    <!-- Results Count -->
+    <p class="mt-4 text-gray-600">
+      Showing {{ filteredApartments.length }} of {{ apartments.length }} apartments
+    </p>
+  </div>
+
+  <!-- APARTMENTS GRID -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let apt of filteredApartments" class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <!-- Image -->
+      <img 
+        *ngIf="apt.image_url" 
+        [src]="apt.image_url" 
+        [alt]="apt.title" 
+        class="w-full h-48 object-cover">
+      
+      <div class="p-6">
+        <h3 class="text-xl font-bold mb-2">{{ apt.title }}</h3>
+        <p class="text-gray-600 mb-2">📍 {{ apt.location }}</p>
+        <p class="text-2xl font-bold text-blue-600 mb-2">₹{{ apt.price | number }}/month</p>
+        <p class="text-gray-600 mb-4">✨ {{ apt.amenities }}</p>
+        <button 
+          (click)="bookApartment(apt.id)"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+          Book Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Results Message -->
+  <div *ngIf="filteredApartments.length === 0" class="text-center py-12">
+    <p class="text-gray-500 text-lg">No apartments found matching your filters</p>
   </div>
 </div>

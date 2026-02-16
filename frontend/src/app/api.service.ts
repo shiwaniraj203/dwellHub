@@ -30,6 +30,7 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/login`, data);
   }
 
+  // PUBLIC - NO AUTH NEEDED
   getApartments(): Observable<any> {
     return this.http.get(`${this.baseUrl}/apartments`);
   }

@@ -12,12 +12,21 @@ import { AuthService } from './auth.service';
       <nav class="bg-blue-600 text-white shadow-lg">
         <div class="container mx-auto px-4 py-4">
           <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold">DwellHub</h1>
-            <div class="flex gap-4" *ngIf="isLoggedIn()">
+            <h1 class="text-2xl font-bold cursor-pointer" routerLink="/apartments">DwellHub</h1>
+            <div class="flex gap-4 items-center">
               <a routerLink="/apartments" class="hover:text-blue-200">Apartments</a>
-              <a routerLink="/bookings" class="hover:text-blue-200" *ngIf="!isAdmin()">My Bookings</a>
+              <a routerLink="/bookings" class="hover:text-blue-200" *ngIf="isLoggedIn()">My Bookings</a>
               <a routerLink="/admin" class="hover:text-blue-200" *ngIf="isAdmin()">Admin</a>
-              <button (click)="logout()" class="hover:text-blue-200">Logout</button>
+              
+              <!-- Show when NOT logged in -->
+              <a routerLink="/login" class="hover:text-blue-200" *ngIf="!isLoggedIn()">Login</a>
+              <a routerLink="/register" class="hover:text-blue-200" *ngIf="!isLoggedIn()">Register</a>
+              
+              <!-- Show when logged in -->
+              <span *ngIf="isLoggedIn()" class="bg-blue-700 px-3 py-1 rounded">
+                👤 {{ getUserName() }}
+              </span>
+              <button (click)="logout()" class="hover:text-blue-200" *ngIf="isLoggedIn()">Logout</button>
             </div>
           </div>
         </div>
@@ -40,8 +49,13 @@ export class AppComponent {
     return this.authService.isAdmin();
   }
 
+  getUserName(): string {
+    const user = this.authService.getUser();
+    return user ? user.name : '';
+  }
+
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/apartments']);
   }
 }

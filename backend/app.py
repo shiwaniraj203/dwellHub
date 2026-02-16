@@ -6,7 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
-import os
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -14,7 +13,6 @@ CORS(app)
 
 db.init_app(app)
 
-# JWT decorator
 def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -30,7 +28,6 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
     return decorated
 
-# Admin only decorator
 def admin_required(f):
     @wraps(f)
     def decorated(current_user, *args, **kwargs):
@@ -41,40 +38,33 @@ def admin_required(f):
 
 @app.route('/api/health', methods=['GET'])
 def health():
-    return jsonify({'status': 'healthy', 'service': 'dwellhub-api'}), 200
+    return jsonify({'status': 'healthy'}), 200
 
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.json
-    
     if User.query.filter_by(email=data['email']).first():
         return jsonify({'message': 'Email already exists'}), 400
-    
     user = User(
         name=data['name'],
         email=data['email'],
         password_hash=generate_password_hash(data['password']),
         role='user'
     )
-    
     db.session.add(user)
     db.session.commit()
-    
     return jsonify({'message': 'User registered successfully'}), 201
 
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
     user = User.query.filter_by(email=data['email']).first()
-    
     if not user or not check_password_hash(user.password_hash, data['password']):
         return jsonify({'message': 'Invalid credentials'}), 401
-    
     token = jwt.encode({
         'user_id': user.id,
         'exp': datetime.utcnow() + timedelta(hours=24)
     }, app.config['JWT_SECRET'], algorithm='HS256')
-    
     return jsonify({
         'token': token,
         'user': {
@@ -93,7 +83,8 @@ def get_apartments():
         'title': apt.title,
         'location': apt.location,
         'price': apt.price,
-        'amenities': apt.amenities
+        'amenities': apt.amenities,
+        'image_url': apt.image_url
     } for apt in apartments]), 200
 
 @app.route('/api/apartments', methods=['POST'])
@@ -105,7 +96,8 @@ def create_apartment(current_user):
         title=data['title'],
         location=data['location'],
         price=data['price'],
-        amenities=data['amenities']
+        amenities=data['amenities'],
+        image_url=data.get('image_url', '')
     )
     db.session.add(apartment)
     db.session.commit()
@@ -119,12 +111,11 @@ def update_apartment(current_user, id):
     apartment = Apartment.query.get(id)
     if not apartment:
         return jsonify({'message': 'Apartment not found'}), 404
-    
     apartment.title = data.get('title', apartment.title)
     apartment.location = data.get('location', apartment.location)
     apartment.price = data.get('price', apartment.price)
     apartment.amenities = data.get('amenities', apartment.amenities)
-    
+    apartment.image_url = data.get('image_url', apartment.image_url)
     db.session.commit()
     return jsonify({'message': 'Apartment updated'}), 200
 
@@ -135,7 +126,6 @@ def delete_apartment(current_user, id):
     apartment = Apartment.query.get(id)
     if not apartment:
         return jsonify({'message': 'Apartment not found'}), 404
-    
     db.session.delete(apartment)
     db.session.commit()
     return jsonify({'message': 'Apartment deleted'}), 200
@@ -196,7 +186,6 @@ def update_booking_status(current_user, id):
     booking = Booking.query.get(id)
     if not booking:
         return jsonify({'message': 'Booking not found'}), 404
-    
     booking.status = data['status']
     db.session.commit()
     return jsonify({'message': 'Booking status updated'}), 200

@@ -18,6 +18,7 @@ class Apartment(db.Model):
     location = db.Column(db.String(200), nullable=False)
     price = db.Column(db.Float, nullable=False)
     amenities = db.Column(db.String(500))
+    image_url = db.Column(db.String(500))
     
 class Booking(db.Model):
     __tablename__ = 'bookings'
